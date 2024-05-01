@@ -1,0 +1,31 @@
+units	lj
+atom_style	atomic
+
+variable	latt	equal 0.8442
+
+lattice	fcc	${latt}
+
+variable	lx	equal	10
+variable	ly	equal	${lx}
+variable	lz	equal	2*${lx}
+
+region	box block 0 ${lx} 0 ${ly} 0 ${lz}
+create_box 1 box
+create_atoms 1 box
+mass 1 1.0
+pair_style lj/cut 2.5
+pair_coeff 1 1 1.0 1.0 2.5
+
+region	liquid block 0 ${lx} 0 ${lx} 0 ${lx}
+group	liquid region liquid
+velocity	liquid create 5.0 87287
+fix	1 liquid nve
+run	500
+unfix	1
+velocity	all create 0.1 87287
+fix	1 all nve
+compute	1 all ptm/atom default 0.1 all
+dump	1 all custom 10 dump.lmp id type xu yu zu c_1[1]
+run	10000
+run	1000
+
