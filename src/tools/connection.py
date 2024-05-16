@@ -5,7 +5,7 @@ from simple_chalk import chalk
 from pssh.clients import SSHClient
 
 
-def connectionToServer(constraints):
+def connectionToServer(constraints, generated_file, filtered_file, local_gen, local_filter, directory):
 
     host_data = getCoonnectionParams("HOST", "host")  #'cluster.hpc.hse.ru'
     user_data = getCoonnectionParams("USER", "user")
@@ -24,23 +24,25 @@ def connectionToServer(constraints):
     #host_out = client.run_command(cmd)
 
 
-    executeCommandOnServer(client, "mkdir check_resources", "creating directory 'check_resources'")
+    executeCommandOnServer(client, "mkdir {0}".format(directory), "creating directory '{0}'".format(directory))
     #executeCommandOnServer(client, "cd check_resources", "entering directory 'check_resources'")
-    executeCommandOnServer(client, "freenodes -d > check_resources/free_nodes.txt", "retrieving resource info")
-    executeCommandOnServer(client, "grep {0} check_resources/free_nodes.txt > check_resources/filter_nodes.txt".format(constraints), "filtering based on node type")
+    executeCommandOnServer(client, "freenodes -d > {0}".format(generated_file), "retrieving resource info")
+    executeCommandOnServer(client, "grep {0} {1} > {2}".format(constraints, generated_file, filtered_file), "filtering based on node type")
 
-    copyFilesFromServer(client)
+    #copyFilesFromServer(client)
+
+    cmds = client.copy_remote_file(generated_file, local_gen)
+    print(chalk.bold(f"\nCoping freenodes data from server"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )
+    
+    cmds = client.copy_remote_file(filtered_file, local_filter)
+    print(chalk.bold(f"Coping filtered data from server"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]\n") )
 
     print(chalk.bold(f"Checking resources from node"), f"........", "[ ", chalk.green.bold(constraints), " ]\n" )
 
 
-def copyFilesFromServer(cliente):
+##def copyFilesFromServer(cliente):
 
-    cmds = cliente.copy_remote_file('check_resources/free_nodes.txt', '../free_nodes.txt')
-    print(chalk.bold(f"Coping freenodes data from server"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )
     
-    cmds = cliente.copy_remote_file('check_resources/filter_nodes.txt', '../filter_nodes.txt')
-    print(chalk.bold(f"Coping filtered data from server"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )
     
     
 def executeCommandOnServer(cliente, command, message): #executeCommandOnServer("mkdir check_resources", "creating directory 'check_resources'")
@@ -61,7 +63,7 @@ def executeCommandOnServer(cliente, command, message): #executeCommandOnServer("
     time.sleep(0.1)
 
 
-def copyBatchOnServer():
+def copyBatchToServer(local_dir, remote_dir):
 
     host_data = getCoonnectionParams("HOST", "host")
     user_data = getCoonnectionParams("USER", "user")
@@ -70,16 +72,16 @@ def copyBatchOnServer():
 
     client = SSHClient( host_data, user=user_data, password=password_data, port=int(port_data) )
     
-    cmds = client.copy_file('../simulation/job.sh', 'check_resources/job.sh')
+    cmds = client.copy_file("../{0}/job.sh".format(local_dir), "{0}/job.sh".format(remote_dir))
     print( chalk.bold(f"\nCoping job.sh"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )
 
-    cmds = client.copy_file('../simulation/params.in', 'check_resources/params.in')
+    cmds = client.copy_file("../{0}/params.in".format(local_dir), "{0}/params.in".format(remote_dir))
     print( chalk.bold(f"Coping params.in"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )
 
-    cmd = """cd check_resources
-             sbatch job.sh"""
+    cmd = """cd {0}
+             sbatch job.sh""".format(remote_dir)
     host_out = client.run_command(cmd)
-    print( chalk.bold( f"\nExecuting job", f"........" ) )
+    print( chalk.bold( f"\nExecuting job"), f"........" )
     for line in host_out.stdout:
         print(f"\t", chalk.green.bold(line) )
     for line in host_out.stderr:

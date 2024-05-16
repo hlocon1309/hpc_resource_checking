@@ -1,7 +1,7 @@
 import os
 import configparser
 from simple_chalk import chalk
-from tools.connection import connectionToServer, copyBatchOnServer
+from tools.connection import connectionToServer, copyBatchToServer
 from tools.resources import printGeneralInfo, getAvailableNode
 
 def mainEntry():
@@ -16,47 +16,51 @@ def showCredits():
 1
 
 def initCheck(url, all_args):
-    print(chalk.yellow.bold(f"\nInitializing Check Procedure", f"........", f"\n"))
-    connectionToServer(all_args.constraint)
-    printGeneralInfo(url)
-    rnode = getAvailableNode(url, all_args.ntasks, all_args.gpus)
+
+    print(chalk.yellow.bold(f"\nInitializing Resource Check Procedure"), f"........", f"\n")
+
+    connectionToServer(all_args.constraint,"check_resources/free_nodes.txt", "check_resources/filter_nodes.txt", "../free_nodes.txt", "../filter_nodes.txt", "check_resources")
+    printGeneralInfo(url, "/filter_nodes.txt")
+    rnode = getAvailableNode(url, "/filter_nodes.txt", all_args.ntasks, all_args.gpus)
+
     if ( rnode == "unavailable" ):
         print( chalk.red.bold(f"\nError: could not create batch file due to lack of resources") )
     else:
-        addToBatchFile("#!/bin/sh\n", 'w')
-        addToBatchFile("\n#SBATCH "+"--account="+all_args.account, 'a')
-        addToBatchFile("\n#SBATCH "+"--job-name="+all_args.job_name, 'a')
-        addToBatchFile("\n#SBATCH "+"--constraint="+all_args.constraint, 'a')
-        addToBatchFile("\n#SBATCH "+"--nodes="+str(all_args.nodes), 'a')
-        addToBatchFile("\n#SBATCH "+"--ntasks="+str(all_args.ntasks), 'a')
+        file_nm = "/simulation/job.sh"
+        addToBatchFile("#!/bin/sh\n", 'w', file_nm)
+        addToBatchFile("\n#SBATCH "+"--account="+all_args.account, 'a', file_nm)
+        addToBatchFile("\n#SBATCH "+"--job-name="+all_args.job_name, 'a', file_nm)
+        addToBatchFile("\n#SBATCH "+"--constraint="+all_args.constraint, 'a', file_nm)
+        addToBatchFile("\n#SBATCH "+"--nodes="+str(all_args.nodes), 'a', file_nm)
+        addToBatchFile("\n#SBATCH "+"--ntasks="+str(all_args.ntasks), 'a', file_nm)
         if not ( all_args.gpus == 0 ) :
-            addToBatchFile("\n#SBATCH "+"--gpus="+str(all_args.gpus), 'a')
+            addToBatchFile("\n#SBATCH "+"--gpus="+str(all_args.gpus), 'a', file_nm)
         splitnode = rnode.split("-")
         fixednode = splitnode[0] + "-" + "[" + splitnode[1] + "]"
-        addToBatchFile("\n#SBATCH "+"--nodelist="+fixednode, 'a') #### SBATCH --nodelist=cn-[017]
-        addToBatchFile("\n#SBATCH "+"--output="+all_args.output, 'a')
-        addToBatchFile("\n#SBATCH "+"--error="+all_args.error, 'a')
-        addToBatchFile("\n#SBATCH "+"--time="+all_args.time, 'a')
-        addToBatchFile("\n\nmodule purge", 'a')
-        addToBatchFile("\nmodule load "+readConfigParams("MODULE", "openmpi"), 'a')
-        addToBatchFile("\nmodule load "+readConfigParams("MODULE", "cuda"), 'a')
-        addToBatchFile("\nmodule load "+readConfigParams("MODULE", "lammps"), 'a')
+        addToBatchFile("\n#SBATCH "+"--nodelist="+fixednode, 'a', file_nm) #### SBATCH --nodelist=cn-[017]
+        addToBatchFile("\n#SBATCH "+"--output="+all_args.output, 'a', file_nm)
+        addToBatchFile("\n#SBATCH "+"--error="+all_args.error, 'a', file_nm)
+        addToBatchFile("\n#SBATCH "+"--time="+all_args.time, 'a', file_nm)
+        addToBatchFile("\n\nmodule purge", 'a', file_nm)
+        addToBatchFile("\nmodule load "+readConfigParams("MODULE", "openmpi"), 'a', file_nm)
+        addToBatchFile("\nmodule load "+readConfigParams("MODULE", "cuda"), 'a', file_nm)
+        addToBatchFile("\nmodule load "+readConfigParams("MODULE", "lammps"), 'a', file_nm)
         srun = readConfigParams("SRUN", "srun")
         if ( all_args.gpus > 0 ) :
             srun += " -sf gpu -pk gpu "
             srun += str( all_args.gpus )
-        addToBatchFile("\nsrun "+srun, 'a')
+        addToBatchFile("\nsrun "+srun, 'a', file_nm)
         
-        addToBatchFile(" "+readConfigParams("INPUTFILE", "inputfile"), 'a')
+        addToBatchFile(" "+readConfigParams("INPUTFILE", "inputfile"), 'a', file_nm)
         print( chalk.bold(f"\nBatch file created"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]" ) )
-        copyBatchOnServer()
+        copyBatchToServer("simulation", "check_resources")
 
 
-def addToBatchFile(text, mode):
+def addToBatchFile(text, mode, file_name):
     try:
         current_dirs_parent = os.path.dirname(os.getcwd())
         #print(current_dirs_parent)
-        with open(current_dirs_parent + "/simulation/job.sh", mode) as f:
+        with open(current_dirs_parent + file_name, mode) as f:
             f.write(text)
     except IOError:
         print(chalk.red.bold(f"Error: could not create file"))

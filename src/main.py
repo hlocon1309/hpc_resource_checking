@@ -1,6 +1,7 @@
 import sys
 import argparse
 from tools.applications import *
+from tools.performance import initPerformanceChenking
 from simple_chalk import chalk
 
 current_dirs_parent = os.path.dirname(os.getcwd())
@@ -20,7 +21,8 @@ parser.add_argument("-n", "--ntasks", type=int, choices=[1,2,4,8,16], default=1,
 parser.add_argument("-o", "--output", default="output-%j.log", help="File in which to store job output (sbatch and srun only)")
 parser.add_argument("-t", "--time", default="00:10:00", help="Limit for job run time")
 parser.add_argument("--credits", action="store_true", help="About framework")
-parser.add_argument("--check", action="store_true", help="Check for resources on HPC, genarates and executes batch file for execution")
+parser.add_argument("--check", action="store_true", help="Check resources on HPC, genarates and executes batch file for execution")
+parser.add_argument("--performance", action="store_true", help="Check resources on HPC for performance benchmark")
 
 args = parser.parse_args()
 print(type(args))
@@ -33,6 +35,8 @@ else:
         showCredits()
     elif args.check:
         initCheck(current_dirs_parent, args)
+    elif args.performance:
+        initPerformanceChenking(current_dirs_parent, args)
     """else:
         addToBatchFile("#!/bin/sh\n", 'a')
         addToBatchFile("\n#SBATCH "+"--account="+args.account, 'a')

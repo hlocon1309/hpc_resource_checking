@@ -121,10 +121,10 @@ def getRAM(ram_data: str) -> str:
     return useram
 
 
-def printGeneralInfo(url1):
+def printGeneralInfo(url1, local_filter):
 
     ## Filtered data from HCP
-    file1 = open(url1 + "/filter_nodes.txt", 'r')
+    file1 = open(url1 + local_filter, 'r')
     Lines = file1.readlines()
     
     #found = False
@@ -139,9 +139,9 @@ def printGeneralInfo(url1):
         #    found = True
 
 
-def getAvailableNode(url1, ntasks, ngpus):
+def getAvailableNode(url1, local_filter, ntasks, ngpus):
     ## Filtered data from HCP
-    file1 = open(url1 + "/filter_nodes.txt", 'r')
+    file1 = open(url1 + local_filter, 'r')
     Lines = file1.readlines()
     
     found = False
