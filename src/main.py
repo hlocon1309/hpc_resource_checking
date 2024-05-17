@@ -23,10 +23,11 @@ parser.add_argument("-t", "--time", default="00:10:00", help="Limit for job run 
 parser.add_argument("--credits", action="store_true", help="About framework")
 parser.add_argument("--check", action="store_true", help="Check resources on HPC, genarates and executes batch file for execution")
 parser.add_argument("--performance", action="store_true", help="Check resources on HPC for performance benchmark")
+parser.add_argument("--automatic", action="store_true", help="Automatic execution for performance and check resources, in this specific order")
 
 args = parser.parse_args()
-print(type(args))
-print(args)
+#print(type(args))
+#print(args)
 
 if not len(sys.argv) > 1:
     mainEntry()
@@ -37,97 +38,6 @@ else:
         initCheck(current_dirs_parent, args)
     elif args.performance:
         initPerformanceChenking(current_dirs_parent, args)
-    """else:
-        addToBatchFile("#!/bin/sh\n", 'a')
-        addToBatchFile("\n#SBATCH "+"--account="+args.account, 'a')
-        addToBatchFile("\n#SBATCH "+"--constraints="+args.constraints, 'a')
-        #addToBatchFile("\n#SBATCH "+"--cpus-per-task="+str(args.cpus_per_task), 'a')
-        addToBatchFile("\n#SBATCH "+"--error="+args.error, 'a')
-        #addToBatchFile("\n#SBATCH "+"--gpus-per-task="+str(args.gpus_per_task), 'a')
-        addToBatchFile("\n#SBATCH "+"--gpus="+str(args.gpus), 'a')
-        addToBatchFile("\n#SBATCH "+"--job-name="+args.job_name, 'a')
-        addToBatchFile("\n#SBATCH "+"--nodes="+str(args.nodes), 'a')
-        addToBatchFile("\n#SBATCH "+"--ntasks="+str(args.ntasks), 'a')
-        #addToBatchFile("\n#SBATCH "+"--ntasks-per-node="+str(args.ntasks_per_node), 'a')
-        addToBatchFile("\n#SBATCH "+"--output="+args.output, 'a')
-        addToBatchFile("\n#SBATCH "+"--time="+args.time, 'a')
-        addToBatchFile("\n\nmodule purge", 'a')
-        addToBatchFile("\nmodule load "+readConfigParams("MODULE"), 'a')
-        addToBatchFile("\nsrun "+readConfigParams("SRUN"), 'a')
-        addToBatchFile(" "+readConfigParams("INPUTFILE"), 'a')
-    """
-
-
-    
-
-"""
-#!/bin/bash
-#SBATCH --job-name={task}            # Job name
-#SBATCH --error={task}-%j.err        # File for outputting error
-#SBATCH --output={task}-%j.log       # File for outputting results
-#SBATCH --time={12:00:00}            # Maximum execution time
-#SBATCH --ntasks={16}                # Number of MPI processes
-#SBATCH --nodes={1}                  # Required number of nodes
-#SBATCH --gpus={4}                   # Required GPU
-#SBATCH --cpus-per-task={2}  
-"""
-
-"""
-#!/bin/sh
-#SBATCH -N 1
-#SBATCH -n 1
-#SBATCH -p normal
-#SBATCH -A proj_1460
-#SBATCH --time=00:30:00
-#SBATCH --constraint=type_b
-
-module purge
-module load openmpi/4.1.4
-module load CUDA/11.7
-module load lammps/2022jun23_update1
-
-srun --mpi=pmix_v2 lmp -i in.lj
-
-"""
-
-
-
-
-"""
-
-#!/bin/sh
-#SBATCH -N 1
-#SBATCH -n 16
-#SBATCH -p normal
-#SBATCH --nodelist=cn-[017]
-#SBATCH --gpus=2
-#SBATCH -A proj_1371
-#SBATCH --constraint=type_b
-
-module load openmpi/4.1.4
-module load CUDA/11.7
-module load lammps/2022jun23_update1
-
-srun --mpi=pmix_v2 lmp -i in.lj -sf gpu -pk gpu 2
-
-"""
-
-"""
-
-#!/bin/sh
-#SBATCH -N 2
-#SBATCH -n 16
-#SBATCH -p normal
-#SBATCH --nodelist=cn-[017,018]
-#SBATCH --gpus-per-node=2
-#SBATCH -A proj_1371
-#SBATCH --constraint=type_b
-
-module load openmpi/4.1.4
-module load CUDA/11.7
-module load lammps/2022jun23_update1
-
-srun --mpi=pmix_v2 lmp -i in.lj -sf gpu -pk gpu 2
-
-
-"""
+    elif args.automatic:
+        initPerformanceChenking(current_dirs_parent, args)
+        initCheck(current_dirs_parent, args)

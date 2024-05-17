@@ -2,10 +2,10 @@
 
 #SBATCH --account=proj_1460
 #SBATCH --job-name=test
-#SBATCH --constraint=type_a
+#SBATCH --constraint=type_b
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
-#SBATCH --nodelist=cn-[002]
+#SBATCH --nodelist=cn-[019]
 #SBATCH --output=output-%j.log
 #SBATCH --error=error-%j.err
 #SBATCH --time=00:10:00

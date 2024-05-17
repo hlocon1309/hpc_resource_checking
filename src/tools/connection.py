@@ -1,3 +1,4 @@
+
 import os
 import time
 import configparser
@@ -7,29 +8,18 @@ from pssh.clients import SSHClient
 
 def connectionToServer(constraints, generated_file, filtered_file, local_gen, local_filter, directory):
 
-    host_data = getCoonnectionParams("HOST", "host")  #'cluster.hpc.hse.ru'
+    host_data = getCoonnectionParams("HOST", "host")
     user_data = getCoonnectionParams("USER", "user")
     password_data = getCoonnectionParams("PASSWORD", "password")
     port_data = getCoonnectionParams("PORT", "port")
 
-    #client = SSHClient(host_data, user='rloconamezquita', password='Microsistem@s001', port=2222)
     client = SSHClient( host_data, user=user_data, password=password_data, port=int(port_data) )
 
-    #cmd = """mkdir check_resources
-    #        cd check_resources
-    #        freenodes -d > free_nodes.txt
-    #        grep {0} free_nodes.txt > filter_nodes.txt
-    #        echo 'executing ..... '""".format(constraints)
-
-    #host_out = client.run_command(cmd)
-
+    checkRemoteDirectory("check_resources")
 
     executeCommandOnServer(client, "mkdir {0}".format(directory), "creating directory '{0}'".format(directory))
-    #executeCommandOnServer(client, "cd check_resources", "entering directory 'check_resources'")
     executeCommandOnServer(client, "freenodes -d > {0}".format(generated_file), "retrieving resource info")
     executeCommandOnServer(client, "grep {0} {1} > {2}".format(constraints, generated_file, filtered_file), "filtering based on node type")
-
-    #copyFilesFromServer(client)
 
     cmds = client.copy_remote_file(generated_file, local_gen)
     print(chalk.bold(f"\nCoping freenodes data from server"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )
@@ -40,12 +30,24 @@ def connectionToServer(constraints, generated_file, filtered_file, local_gen, lo
     print(chalk.bold(f"Checking resources from node"), f"........", "[ ", chalk.green.bold(constraints), " ]\n" )
 
 
-##def copyFilesFromServer(cliente):
+def checkRemoteDirectory(directory):
+    host_data = getCoonnectionParams("HOST", "host")
+    user_data = getCoonnectionParams("USER", "user")
+    password_data = getCoonnectionParams("PASSWORD", "password")
+    port_data = getCoonnectionParams("PORT", "port")
+
+    client = SSHClient( host_data, user=user_data, password=password_data, port=int(port_data) )
+
+    cmd = """
+                if [ -d {0} ]; then
+                    rm -r {0}
+                fi
+                """.format(directory)
+
+    executeCommandOnServer(client, cmd, "cheking if exists '{0}'".format(directory))
 
     
-    
-    
-def executeCommandOnServer(cliente, command, message): #executeCommandOnServer("mkdir check_resources", "creating directory 'check_resources'")
+def executeCommandOnServer(cliente, command, message):
 
     host_out = cliente.run_command(command)
     error_message = ""
@@ -86,6 +88,10 @@ def copyBatchToServer(local_dir, remote_dir):
         print(f"\t", chalk.green.bold(line) )
     for line in host_out.stderr:
         print(f"\t", chalk.red.bold(line) )
+
+    print( chalk.bold( f"\nWaiting 30 seconds to complete execution" ), chalk.bold( f"........" ) )
+    time.sleep(30)
+    print( chalk.bold( f"\nExecution finished" ), chalk.bold( f"........" ), f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )
 
 
 def getCoonnectionParams(parameter, subparam):

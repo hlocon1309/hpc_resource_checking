@@ -1,11 +1,8 @@
+
 import os
 import re
 from simple_chalk import chalk
 
-#found = False
-#nodef = ""
-#nodec = 0
-#nodeg = 0
 
 def getNode(node_type: str) -> str:
     nod = node_type.lstrip().rstrip()
@@ -15,8 +12,6 @@ def getNode(node_type: str) -> str:
 
 def getCPU(cpu_data: str) -> str:
     cpud = cpu_data.lstrip().rstrip().split(" ")
-    #global nodec
-    #nodec = int(cpud[1])
     porcentcpu = float(cpud[1]) / float(cpud[2])
     progress = int( ( porcentcpu ) * 20 )
 
@@ -127,7 +122,6 @@ def printGeneralInfo(url1, local_filter):
     file1 = open(url1 + local_filter, 'r')
     Lines = file1.readlines()
     
-    #found = False
     #Generates lines without spaces and only usefull data
     for line in Lines:
         reg = re.sub(r'-\Dtype_[a-d]\D-\Dдоступно', "|", line)
@@ -140,12 +134,14 @@ def printGeneralInfo(url1, local_filter):
 
 
 def getAvailableNode(url1, local_filter, ntasks, ngpus):
+
     ## Filtered data from HCP
     file1 = open(url1 + local_filter, 'r')
     Lines = file1.readlines()
     
     found = False
     fnode = ""
+
     #Generates lines without spaces and only usefull data
     for line in Lines:
         reg = re.sub(r'-\Dtype_[a-d]\D-\Dдоступно', "|", line)
@@ -172,7 +168,3 @@ def getAvailableNode(url1, local_filter, ntasks, ngpus):
     else:
         print( chalk.bold( f"\nAvailable Node" ), f"........", f"[", chalk.red.bold(f"Resources unavailable"), chalk.bold(f"]") )
         return "unavailable"
-        #print( chalk.bold( getNode(splitby[0]) + " --> " + getCPU(splitby[1]) + " " + getGPU(splitby[2]) + getRAM(splitby[3]) ) )
-        #if not found:
-        #    print("Best option for execution: ", nodef, nodec, nodeg)
-        #    found = True

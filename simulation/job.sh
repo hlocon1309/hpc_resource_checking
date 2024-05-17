@@ -5,7 +5,7 @@
 #SBATCH --constraint=type_b
 #SBATCH --nodes=1
 #SBATCH --ntasks=16
-#SBATCH --nodelist=cn-[017]
+#SBATCH --nodelist=cn-[019]
 #SBATCH --output=output-%j.log
 #SBATCH --error=error-%j.err
 #SBATCH --time=00:10:00

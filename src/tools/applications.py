@@ -37,7 +37,7 @@ def initCheck(url, all_args):
             addToBatchFile("\n#SBATCH "+"--gpus="+str(all_args.gpus), 'a', file_nm)
         splitnode = rnode.split("-")
         fixednode = splitnode[0] + "-" + "[" + splitnode[1] + "]"
-        addToBatchFile("\n#SBATCH "+"--nodelist="+fixednode, 'a', file_nm) #### SBATCH --nodelist=cn-[017]
+        addToBatchFile("\n#SBATCH "+"--nodelist="+fixednode, 'a', file_nm)
         addToBatchFile("\n#SBATCH "+"--output="+all_args.output, 'a', file_nm)
         addToBatchFile("\n#SBATCH "+"--error="+all_args.error, 'a', file_nm)
         addToBatchFile("\n#SBATCH "+"--time="+all_args.time, 'a', file_nm)
@@ -73,12 +73,9 @@ def readConfigParams(parameter, subparam):
     try:
         current_dirs_parent = os.path.dirname(os.getcwd())
         config.read(current_dirs_parent + "/config/params.conf")
-        #config.readfp(open(r'param.conf'))
         param = config.get(parameter, subparam)
         
         return param
-        #path2 = config.get('My Section', 'path2')
-        #path3 = config.get('My Section', 'path3')
 
     except IOError:
         print(chalk.red.bold(f"Error: could not open configuration file"))
