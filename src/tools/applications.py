@@ -1,7 +1,7 @@
 import os
 import configparser
 from simple_chalk import chalk
-from tools.connection import connectionToServer, copyBatchToServer
+from tools.connection import connectionToServer, copyBatchToServer, retreiveOutuputLog
 from tools.resources import printGeneralInfo, getAvailableNode
 
 def mainEntry():
@@ -38,8 +38,8 @@ def initCheck(url, all_args):
         splitnode = rnode.split("-")
         fixednode = splitnode[0] + "-" + "[" + splitnode[1] + "]"
         addToBatchFile("\n#SBATCH "+"--nodelist="+fixednode, 'a', file_nm)
-        addToBatchFile("\n#SBATCH "+"--output="+all_args.output, 'a', file_nm)
-        addToBatchFile("\n#SBATCH "+"--error="+all_args.error, 'a', file_nm)
+        addToBatchFile("\n#SBATCH "+"--output="+"output.log", 'a', file_nm) ### all_args.output
+        addToBatchFile("\n#SBATCH "+"--error="+"error.err", 'a', file_nm)  ### all_args.error
         addToBatchFile("\n#SBATCH "+"--time="+all_args.time, 'a', file_nm)
         addToBatchFile("\n\nmodule purge", 'a', file_nm)
         addToBatchFile("\nmodule load "+readConfigParams("MODULE", "openmpi"), 'a', file_nm)
@@ -54,6 +54,8 @@ def initCheck(url, all_args):
         addToBatchFile(" "+readConfigParams("INPUTFILE", "inputfile"), 'a', file_nm)
         print( chalk.bold(f"\nBatch file created"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]" ) )
         copyBatchToServer("simulation", "check_resources")
+
+        retreiveOutuputLog("check_resources/output.log", "../output.log")
 
 
 def addToBatchFile(text, mode, file_name):

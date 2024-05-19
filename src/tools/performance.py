@@ -57,6 +57,25 @@ def initPerformanceChenking(url, all_args):
         print( chalk.bold(f"\nPerformance Bechmark batch file pool created"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]" ) )
         copyBatchToServer("performance", "check_performance")
 
+        generateFilters()
+
+        retreivePerformanceLog("check_performance/performance.log", "../performance.log", "check_performance/loop.log", "../loop.log")
+
+
+def generateFilters():
+
+    host_data = getCoonnectionParams("HOST", "host")
+    user_data = getCoonnectionParams("USER", "user")
+    password_data = getCoonnectionParams("PASSWORD", "password")
+    port_data = getCoonnectionParams("PORT", "port")
+
+    client = SSHClient( host_data, user=user_data, password=password_data, port=int(port_data) )
+
+    executeCommandOnServer(client, "grep Performance check_performance/output* > check_performance/performance.log", "filtering performance")
+    executeCommandOnServer(client, "grep Loop check_performance/output* > check_performance/loop.log", "filtering loop time")
+
+
+
 def checkRemoteDirectory(directory):
     host_data = getCoonnectionParams("HOST", "host")
     user_data = getCoonnectionParams("USER", "user")
@@ -107,3 +126,17 @@ def copyBatchToServer(local_dir, remote_dir):
     time.sleep(60)
     print( chalk.bold( f"\nExecution finished" ), chalk.bold( f"........" ), f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )
 
+
+def retreivePerformanceLog(gen_performance_file, local_performance, gen_loop_file, local_loop ):
+
+    host_data = getCoonnectionParams("HOST", "host")
+    user_data = getCoonnectionParams("USER", "user")
+    password_data = getCoonnectionParams("PASSWORD", "password")
+    port_data = getCoonnectionParams("PORT", "port")
+
+    client = SSHClient( host_data, user=user_data, password=password_data, port=int(port_data) )
+
+    cmds = client.copy_remote_file(gen_performance_file, local_performance)
+    cmds = client.copy_remote_file(gen_loop_file, local_loop)
+
+    print(chalk.bold(f"\nCoping performance and loop time results from server"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )

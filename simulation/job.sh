@@ -2,12 +2,12 @@
 
 #SBATCH --account=proj_1460
 #SBATCH --job-name=test
-#SBATCH --constraint=type_b
+#SBATCH --constraint=type_a
 #SBATCH --nodes=1
 #SBATCH --ntasks=16
-#SBATCH --nodelist=cn-[019]
-#SBATCH --output=output-%j.log
-#SBATCH --error=error-%j.err
+#SBATCH --nodelist=cn-[001]
+#SBATCH --output=output.log
+#SBATCH --error=error.err
 #SBATCH --time=00:10:00
 
 module purge

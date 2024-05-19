@@ -94,6 +94,21 @@ def copyBatchToServer(local_dir, remote_dir):
     print( chalk.bold( f"\nExecution finished" ), chalk.bold( f"........" ), f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )
 
 
+
+def retreiveOutuputLog(generated_file, local_gen):
+
+    host_data = getCoonnectionParams("HOST", "host")
+    user_data = getCoonnectionParams("USER", "user")
+    password_data = getCoonnectionParams("PASSWORD", "password")
+    port_data = getCoonnectionParams("PORT", "port")
+
+    client = SSHClient( host_data, user=user_data, password=password_data, port=int(port_data) )
+
+    cmds = client.copy_remote_file(generated_file, local_gen)
+    print(chalk.bold(f"\nCoping simulation results from server"), f"........", f"[", chalk.green.bold(f"OK"), chalk.bold(f"]") )
+
+
+
 def getCoonnectionParams(parameter, subparam):
 
     config = configparser.ConfigParser()

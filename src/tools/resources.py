@@ -128,9 +128,6 @@ def printGeneralInfo(url1, local_filter):
         regf = re.sub(r'(-ядер:\D{2,3})|(:\D{1,2})|(\Dиз\D{2})|(\Dиз\D)', " ", reg)
         splitby = regf.split("|")
         print( chalk.bold( getNode(splitby[0]) + " --> " + getCPU(splitby[1]) + " " + getGPU(splitby[2]) + getRAM(splitby[3]) ) )
-        #if not found:
-        #    print("Best option for execution: ", nodef, nodec, nodeg)
-        #    found = True
 
 
 def getAvailableNode(url1, local_filter, ntasks, ngpus):
