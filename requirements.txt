@@ -1,0 +1,6 @@
+simple-chalk  == 0.1.0
+configparser  == 6.0.1
+ssh2-python   == 1.0.0
+parallel_ssh  == 2.12.0
+matplotlib    == 3.6.3
+seaborn       == 0.13.2

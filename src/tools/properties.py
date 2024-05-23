@@ -45,17 +45,17 @@ def calculateProperties(current_dir, temp, press, eng):
     if temp:
         f1 = sns.lineplot(ax=axes[0], data=temperature) ## palette="flare"
         axes[0].set_title("Temperature\nAvg = {0:.4f}".format(tempA))
-        f1.set(xlabel='Steps', ylabel='Temperature(Lennad-Jones units)')
+        f1.set(xlabel='# of Steps', ylabel='Temperature(Lennad-Jones units)')
 
     if press:
         f2 = sns.lineplot(ax=axes[1], data=pressure) ## palette="crest"
         axes[1].set_title("Pressure\nAvg = {0:.4f}".format(pressA))
-        f2.set(xlabel='Steps', ylabel='Pressure(Lennad-Jones units)')
+        f2.set(xlabel='# of Steps', ylabel='Pressure(Lennad-Jones units)')
 
     if eng:
         f3 = sns.lineplot(ax=axes[2], data=energy)
         axes[2].set_title("Total Energy\nAvg = {0:.4f}".format(teA))
-        f3.set(xlabel='Steps', ylabel='Total Energy(Lennad-Jones units)')
+        f3.set(xlabel='# of Steps', ylabel='Total Energy(Lennad-Jones units)')
 
     plt.show()
 

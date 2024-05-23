@@ -1,5 +1,3 @@
-check_performance/output-1994058.log:Performance: 10801.048 tau/day, 25.002 timesteps/s
-check_performance/output-1994059.log:Performance: 20466.545 tau/day, 47.376 timesteps/s
-check_performance/output-1994060.log:Performance: 39069.624 tau/day, 90.439 timesteps/s
-check_performance/output-1994061.log:Performance: 74393.883 tau/day, 172.208 timesteps/s
-check_performance/output-1994062.log:Performance: 141299.129 tau/day, 327.081 timesteps/s
+check_performance/output-1999994.log:Performance: 11824.033 tau/day, 27.370 timesteps/s
+check_performance/output-1999995.log:Performance: 20286.630 tau/day, 46.960 timesteps/s
+check_performance/output-1999998.log:Performance: 142098.362 tau/day, 328.931 timesteps/s

@@ -47,12 +47,12 @@ def calculateBenchmark(current_dir, tloop, tper):
     if tloop:
         f1 = sns.lineplot(ax=axes[0], data=time_loop, palette="flare")
         axes[0].set_title("Loop Time")
-        f1.set(xlabel='Tests', ylabel='Loop Time(sec)')
+        f1.set(xlabel='Tasks per node', ylabel='Loop Time(sec)')
 
     if tper:
         f2 = sns.lineplot(ax=axes[1], data=tperformance, palette="crest")
         axes[1].set_title("Performance")
-        f2.set(xlabel='Tests', ylabel='Performance(tau/day)')
+        f2.set(xlabel='Tasks per node', ylabel='Performance(tau/day)')
 
 
     plt.show()

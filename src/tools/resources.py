@@ -74,7 +74,7 @@ def getGPU(gpu_data: str) -> str:
             porstr = str( int( porcent * 100)  ) + f"%" #porcentage with no decimals
             if int(porcent * 100) < 10:
                 porstr = "  " + porstr
-            if ( int(porcent * 100) >= 10 ) and ( int(porcent) < 100 ):
+            if ( int(porcent * 100) >= 10 ) and ( int(porcent * 100) < 100 ):
                 porstr = " " + porstr
             return porstr
 
@@ -107,7 +107,7 @@ def getRAM(ram_data: str) -> str:
         porstr = str( int( porcent * 100)  ) + f"%" #porcentage with no decimals
         if int(porcent * 100) < 10:
             porstr = "  " + porstr
-        if ( int(porcent * 100) >= 10 ) and ( int(porcent) < 100 ):
+        if ( int(porcent * 100) >= 10 ) and ( int(porcent * 100) < 100 ):
             porstr = " " + porstr
         return porstr
 
