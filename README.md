@@ -7,7 +7,7 @@ Description
 ## Installation
 
 ```
-https://git.miem.hse.ru/gsmirnov1/lammps_rufino.git
+git clone https://github.com/hlocon1309/hpc_resource_checking.git
 
 ```
 After cloning repo, go to main folder and execute setup script file
