@@ -6,10 +6,14 @@ Description
 
 ## Installation
 
+For cloning the repo just execute:
+
 ```
 git clone https://github.com/hlocon1309/hpc_resource_checking.git
 
 ```
+## How to Start
+
 After cloning repo, go to main folder and execute setup script file
 
 ```
