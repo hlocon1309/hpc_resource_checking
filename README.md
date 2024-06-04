@@ -9,7 +9,7 @@ Description
 For cloning the repo just execute:
 
 ```
-git clone https://github.com/hlocon1309/hpc_resource_checking.git
+$ git clone https://github.com/hlocon1309/hpc_resource_checking.git
 
 ```
 ## How to Start
@@ -17,15 +17,15 @@ git clone https://github.com/hlocon1309/hpc_resource_checking.git
 After cloning repo, go to main folder and execute setup script file
 
 ```
-./setup.sh
+$ ./setup.sh
 
 ```
 Then go to source folder, active virtual environment. Run main scritp with -h parameter for help.
 
 ```
-cd src
-. venv/bin/active
-python3 main.py -h
+$ cd src
+$ . venv/bin/active
+$ python3 main.py -h
 
 ```
 ## Interactive Mode
@@ -33,7 +33,7 @@ python3 main.py -h
 Interactive mode is intended to generate the input file for LAMMPS package. For interactive mode, apply the following command:
 
 ```
-python3 main.py --imode
+$ python3 main.py --imode
 
 ```
 ## Check Resources
